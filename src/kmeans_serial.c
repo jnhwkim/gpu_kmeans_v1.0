@@ -30,7 +30,7 @@
 #include <cuda.h>
 #include <cuda_runtime_api.h>
 
-#define max_iterations 50
+#define max_iterations 1000
 
 typedef struct {
   float *dataset;

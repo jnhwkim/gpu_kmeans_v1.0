@@ -5,6 +5,8 @@ function [Centroids Indx SizeofClusters gpu_Time] = kmeans_gpu(dataset, numClust
 % variables. The algorithm is executed exclusively on the systems GPU. kmeans_gpu returns
 % a K-by-P matrix containing the cluster centers. kmeans_gpu uses squared
 % Euclidean distances.
+%   Modified: cityblock distance (by jhkim@bi.snu.ac.kr)
+%   Modified: max iterations = 1K
 %
 % [C, IDX] = kmeans_gpu(X, K) returns the cluster indices of each point in a N-by-1 matrix.
 %
@@ -19,12 +21,14 @@ function [Centroids Indx SizeofClusters gpu_Time] = kmeans_gpu(dataset, numClust
     Objects  = size(dataset,1);
     dataset = [dataset; dataset(1:ceil(Objects/128)*128 - Objects,:)];
     
-    [Centroids Indx SizeofClusters gpu_Time] = cudaKmeans(single(dataset), single(dataset'), numClusters);
-    
-    
+    [Centroids Indx SizeofClusters gpu_Time] = ...
+        cudaKmeans(single(dataset), single(dataset'), numClusters);
     Centroids = Centroids';
-    u = unique(Indx(Objects+1:end)) + 1;
-    SizeofClusters(u) = SizeofClusters(u) - hist(Indx(Objects+1:end)+1, u)';
-    Indx = Indx(1:Objects) + 1;
+   
+    if 0 < mod(Objects, 128)
+        u = unique(Indx(Objects+1:end)) + 1;
+        SizeofClusters(u) = SizeofClusters(u) - hist(Indx(Objects+1:end)+1, u)';
+        Indx = Indx(1:Objects) + 1;
+    end
 
 end

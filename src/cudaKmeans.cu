@@ -30,7 +30,7 @@
 #include <math.h>
 #include "cuda.h"
 
-#define max_iterations 50
+#define max_iterations 1000
 #define BlockSize 1024
 #define NUMBER_OF_SUBMATRICES 128
 
