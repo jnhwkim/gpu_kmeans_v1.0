@@ -30,7 +30,7 @@
 #include <math.h>
 #include "cuda.h"
 
-#define max_iterations 1000
+#define max_iterations 100
 #define BlockSize 1024
 #define NUMBER_OF_SUBMATRICES 128
 
@@ -132,8 +132,8 @@ __device__ float euclidean_distance_gpu(float *v1, float *v2, int attributes, in
 #pragma unroll 2
   for( int i = 0; i < attributes; i++ )
     {
-      float tmp = v2[i*numObjects] - v1[i];
-      dist += tmp * tmp;
+      float tmp = abs(v2[i*numObjects] - v1[i]);
+      dist += tmp;
     }
   return dist;
 }
