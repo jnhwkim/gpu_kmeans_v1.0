@@ -27,7 +27,11 @@ function [Centroids Indx SizeofClusters gpu_Time] = kmeans_gpu(dataset, numClust
    
     if 0 < mod(Objects, 128)
         u = unique(Indx(Objects+1:end)) + 1;
-        SizeofClusters(u) = SizeofClusters(u) - hist(Indx(Objects+1:end)+1, u)';
+        if 1 < size(u,1)
+            SizeofClusters(u) = SizeofClusters(u) - hist(Indx(Objects+1:end)+1, u)';
+        else
+            SizeofClusters(u) = SizeofClusters(u) - u;
+        end
         Indx = Indx(1:Objects) + 1;
     end
 
